@@ -1,0 +1,78 @@
+enable
+configure terminal
+hostname SALA_1
+!
+enable algorithm-type sha256 secret admin
+!
+vtp mode client 
+vtp version 2
+vtp domain LAB.net
+vtp password LAB
+!
+interface GigabitEthernet0/0
+ description L3
+ channel-group 1 mode passive
+ channel-protocol lacp 
+!
+interface GigabitEthernet0/1
+ description L3
+ channel-group 1 mode passive
+ channel-protocol lacp 
+!
+interface Port-channel 1
+ description L3 - lacp
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,50
+!
+interface gigabitEthernet0/2
+ switchport access vlan 10
+ switchport mode access
+!
+interface gigabitEthernet0/3
+ switchport access vlan 50
+ switchport mode access
+!
+interface gigabitEthernet1/0
+ switchport access vlan 20
+ switchport mode access
+!
+interface gigabitEthernet1/1
+ switchport access vlan 100
+ switchport mode access
+! 
+interface gigabitEthernet1/2
+ switchport access vlan 100
+ switchport mode access
+!
+interface gigabitEthernet1/3
+ switchport access vlan 100
+ switchport mode access
+!
+interface vlan 50
+ ip address 10.1.50.3 255.255.255.248
+ no shutdown
+!
+ip domain-name SALA1.LAB.net
+username admin algorithm-type sha256 secret admin
+crypto key generate rsa general-keys modulus 2048
+!
+line console 0
+ login local
+ exec-timeout 0 30
+!
+line vty 0 4
+ transport input ssh 
+ login local
+ exec-timeout 0 30
+ exit
+!
+banner login #
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@ ACESSO RESTRITO AO SW DA SALA 1 @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+#
+end 
+wr
